@@ -15,6 +15,6 @@
 - **Living obstacles**
 - **Difficulty**
 
-## Perfection Features**
+## Perfection Features
 - **Multiplayer**
 - **Power ups**
