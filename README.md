@@ -23,3 +23,4 @@
 
 ## Power-Ups
 - **Jump**
+- **Boost**
