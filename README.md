@@ -20,3 +20,6 @@
 ## Perfection Features
 - **Multiplayer**
 - **Power ups**
+
+## Power-Ups
+- **Jump**
