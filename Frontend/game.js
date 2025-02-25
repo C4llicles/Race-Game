@@ -2,28 +2,47 @@ const cnv = document.getElementById('Game');
 const context = cnv.getContext('2d');
 const img_voiture = new Image();
 img_voiture.src = 'car.png';
+let x = (cnv.width - 70) / 2;
+let y = (cnv.height - 110) / 2;
 
 img_voiture.onload = function() {
-    context.drawImage(img_voiture, 50, 50, 70, 110);
+    context.drawImage(img_voiture, x, y, 70, 110);
 };
 
 function move(dir) {
     switch (dir) {
         case 'right':
-            context.clearRect(0, 0, cnv.width, cnv.height)
-            context.drawImage(img_voiture, 100, 50, 70, 110);
+            x += 2;
             break;
         case 'left':
-            context.clearRect(0, 0, cnv.width, cnv.height)
-            context.drawImage(img_voiture, 150, 50, 70, 110);
+            x -= 2;
+            break;
+        case 'up':
+            y -= 2;
+            break;
+        case 'down':
+            y += 2;
             break;
     }
+    context.clearRect(0, 0, cnv.width, cnv.height)
+    context.drawImage(img_voiture, x, y, 70, 110);
 }
 
 addEventListener('keypress', function(event) {
-    if (event.key === 'ArrowRight') {
-        move('right');
-    } else if (event.key === 'q') {
-        move('left');
+    switch (event.key) {
+        case 'd':
+            move('right');
+            break;
+        case 'q':
+            move('left');
+            break;
+        case 'z':
+            move('up');
+            break;
+        case 's':
+            move('down');
+            break;
+        
+        }
     }
-});
+);
