@@ -23,14 +23,14 @@ img_voiture.onload = function() {
 // Fonction d'animation qui met à jour la position de la voiture
 function animate() {
     // Met à jour les positions cibles en fonction des touches enfoncées
-    if (keys['d']) targetX += 2;
-    if (keys['q']) targetX -= 2;
-    if (keys['z']) targetY -= 2;
-    if (keys['s']) targetY += 2;
+    if (keys['d']) targetX += 5;
+    if (keys['q']) targetX -= 5;
+    if (keys['z']) targetY -= 5;
+    if (keys['s']) targetY += 5;
 
     // Transition douce vers les positions cibles
-    x += (targetX - x) * 0.1;
-    y += (targetY - y) * 0.1;
+    x += (targetX - x) * 0.01;
+    y += (targetY - y) * 0.01;
 
     // Efface le canvas et redessine la voiture à la nouvelle position
     context.clearRect(0, 0, cnv.width, cnv.height);
