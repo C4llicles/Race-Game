@@ -31,7 +31,9 @@ function move() {
     requestAnimationFrame(move);
 }
 
-
+function restart() {
+    
+}
 
 addEventListener('keydown', function(event) {
     if (event.key === 'z') {

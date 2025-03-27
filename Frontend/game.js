@@ -17,6 +17,11 @@ const deceleration = 0.01; // Décélération progressive
 const maxRotationSpeed = 0.05; // Limite maximale de rotation par frame (en radians)
 let PauseGame = false; // Variable pour contrôler la pause
 
+
+
+
+
+
 img_voiture.onload = function() {
 };
 
@@ -127,6 +132,7 @@ function pause() {
 addEventListener('keypress', function(event) {
     if (event.key === "p") {
         PauseGame = !PauseGame; // Basculer entre pause et reprise
+        this.document.getElementById("pausemenu").style.display = PauseGame ? "block" : "none"; // Afficher ou masquer le menu de pause
     }
 });
 
