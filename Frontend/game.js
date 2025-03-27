@@ -9,9 +9,15 @@ let y = (cnv.height - 110) / 2;
 let targetX = x;
 let targetY = y;
 let keys = {'z': false,'q': false,'s': false,'d': false};
+let currentAngle = 0;
+let currentSpeed = 0; // Vitesse actuelle
+const maxSpeed = 10; // Vitesse maximale
+const acceleration = 0.05; // Accélération progressive
+const deceleration = 0.01; // Décélération progressive
+const maxRotationSpeed = 0.05; // Limite maximale de rotation par frame (en radians)
+let PauseGame = false; // Variable pour contrôler la pause
 
 img_voiture.onload = function() {
-    
 };
 
 img_circuit.onload = function() {
@@ -19,15 +25,65 @@ img_circuit.onload = function() {
 }
 
 function move() {
-    if (keys['d']) targetX += 5;
-    if (keys['q']) targetX -= 5;
-    if (keys['z']) targetY -= 5;
-    if (keys['s']) targetY += 5;
-    x += (targetX - x) * 0.01;
-    y += (targetY - y) * 0.01;
-    context.clearRect(0, 0, cnv.width, cnv.height)
-    context.drawImage(img_circuit, 0, 0, cnv.width, cnv.height);
-    context.drawImage(img_voiture, x, y, 49, 77);
+    if (PauseGame) {
+        requestAnimationFrame(move); // Continuer à vérifier si le jeu est en pause
+        return; // Arrêter l'exécution de la logique du jeu
+    }
+
+    // Gérer l'accélération et la décélération
+    if (keys['z'] || keys['q'] || keys['s'] || keys['d']) {
+        currentSpeed = Math.min(currentSpeed + acceleration, maxSpeed); // Augmenter la vitesse jusqu'à maxSpeed
+    } else {
+        currentSpeed = Math.max(currentSpeed - deceleration, 0); // Réduire la vitesse progressivement
+    }
+
+    if (keys['d']) targetX -= currentSpeed;
+    if (keys['q']) targetX += currentSpeed;
+    if (keys['z']) targetY += currentSpeed;
+    if (keys['s']) targetY -= currentSpeed;
+
+    // Calculate the angle of rotation
+    const dx = targetX - x;
+    const dy = targetY - y;
+    const targetAngle = Math.atan2(dy, dx) - Math.PI / 2;
+
+    // Smoothly adjust the current angle towards the target angle
+    let angleDifference = targetAngle - currentAngle;
+
+    // Ensure the angle difference takes the shortest path
+    if (angleDifference > Math.PI) {
+        angleDifference -= 2 * Math.PI;
+    } else if (angleDifference < -Math.PI) {
+        angleDifference += 2 * Math.PI;
+    }
+
+    // Limiter la vitesse de rotation
+    angleDifference = Math.max(-maxRotationSpeed, Math.min(maxRotationSpeed, angleDifference));
+
+    currentAngle += angleDifference;
+
+    // Normalize the angle to stay within [0, 2 * Math.PI]
+    currentAngle = (currentAngle + 2 * Math.PI) % (2 * Math.PI);
+
+    x += dx * 0.01;
+    y += dy * 0.01;
+
+    context.clearRect(0, 0, cnv.width, cnv.height);
+    context.drawImage(img_circuit, x, y, cnv.width, cnv.height);
+
+    // Save the context state
+    context.save();
+
+    // Translate to the center of the car and rotate
+    context.translate(cnv.width / 2, cnv.height / 2);
+    context.rotate(currentAngle);
+
+    // Draw the car image
+    context.drawImage(img_voiture, -49 / 2, -77 / 2, 49, 77);
+
+    // Restore the context state
+    context.restore();
+
     requestAnimationFrame(move);
 }
 
@@ -62,5 +118,16 @@ addEventListener('keyup', function(event) {
     }
 }
 );
+
+function pause() {
+    context.save();
+    
+};
+
+addEventListener('keypress', function(event) {
+    if (event.key === "p") {
+        PauseGame = !PauseGame; // Basculer entre pause et reprise
+    }
+});
 
 move();
