@@ -54,18 +54,59 @@ class Tile {
 }
 
 function generateRandomMap(rows, cols) {
-    const map = [];
-    for (let i = 0; i < rows; i++) {
-        const row = [];
-        for (let j = 0; j < cols; j++) {
-            row.push(Math.floor(Math.random() * 2)); // 0: road, 1: wall
+    const map = Array.from({ length: rows }, () => Array(cols).fill(1)); // Initialize all tiles as walls (1)
+
+    const startX = Math.floor(rows / 2);
+    const startY = Math.floor(cols / 2);
+    let currentX = startX;
+    let currentY = startY;
+
+    const directions = [
+        [0, 1],  // Right
+        [1, 0],  // Down
+        [0, -1], // Left
+        [-1, 0], // Up
+    ];
+
+    let directionIndex = 0; // Start moving to the right
+
+    // Generate the course
+    for (let i = 0; i < rows * cols; i++) {
+        // Create a 2-tile-wide corridor
+        for (let w = 0; w < 2; w++) {
+            const offsetX = w === 0 ? 0 : directions[directionIndex][0];
+            const offsetY = w === 0 ? 0 : directions[directionIndex][1];
+
+            const newX = currentX + offsetX;
+            const newY = currentY + offsetY;
+
+            if (newX >= 0 && newX < rows && newY >= 0 && newY < cols) {
+                map[newX][newY] = 0; // Mark as road (concrete)
+            }
         }
-        map.push(row);
+
+        // Move to the next position
+        const [dx, dy] = directions[directionIndex];
+        currentX += dx;
+        currentY += dy;
+
+        // Ensure the course stays within bounds
+        if (
+            currentX < 1 || currentX >= rows - 1 || 
+            currentY < 1 || currentY >= cols - 1
+        ) {
+            directionIndex = (directionIndex + 1) % 4; // Change direction
+            continue;
+        }
+
+        // Randomly change direction to create zigzags and turns
+        if (Math.random() < 0.2) {
+            directionIndex = (directionIndex + (Math.random() < 0.5 ? 1 : -1) + 4) % 4;
+        }
     }
+
     return map;
 }
-
-map_1 = generateRandomMap(50, 50);
 
 function drawMap(map_1, modx, mody) {
     for (let i = 0; i < map_1.length; i++) {
