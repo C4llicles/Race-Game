@@ -1,19 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 body {
-    background: rgb(255,255,255);
-    background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(0,255,196,1) 50%, rgba(13,13,13,1) 100%);
-    background-repeat: no-repeat;
+    background: #000; /* Fond noir pour un effet néon */
+    color: #fff; /* Texte blanc pour le contraste */
+    font-family: 'Roboto', sans-serif;
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; /* Effet néon sur le texte */
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #000, #00ffff, #ff00ff); /* Dégradé néon */
     background-attachment: fixed;
+    background-size: cover;
 }
 
 h1 {
     font-family: 'Roboto', sans-serif;
     font-size: 100px;
-    color: #ffffff;
+    color: #fff;
     text-align: center;
     margin-top: 0;
     padding-top: 150px;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; /* Effet néon sur le titre */
 }
 
 #align-play-button {
@@ -23,15 +29,22 @@ h1 {
 }
 
 button {
-    width: 130px;
-    height: 70px;
     font-family: 'Roboto', sans-serif;
     font-size: 30px;
     font-weight: bold;
-    border-radius: 10px;
-    background-color:crimson;
-    color: white;
-    border-width: 10px;
+    border-radius: 15px;
+    background-color: #000; /* Fond noir */
+    color: #fff; /* Texte blanc */
+    border: 3px solid transparent; /* Bordure initiale transparente */
     cursor: pointer;
-    box-shadow: 2px 4px 16px #000000;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; /* Effet néon */
+    transition: transform 0.2s, box-shadow 0.2s; /* Animation au survol */
+    padding: 15px 30px;
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; /* Effet néon sur le texte des boutons */
+}
+
+button:hover {
+    transform: scale(1.1); /* Agrandissement au survol */
+    box-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff; /* Intensification de l'effet néon */
+    background-color: #ff00ff; /* Couleur lumineuse néon rose */
 }

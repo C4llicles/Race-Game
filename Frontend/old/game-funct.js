@@ -17,41 +17,15 @@ const deceleration = 0.01; // Décélération progressive
 const maxRotationSpeed = 0.05; // Limite maximale de rotation par frame (en radians)
 let PauseGame = false; // Variable pour contrôler la pause
 
-const tileWidth = 100;
-const tileHeight = 100;
+const tileWidth = 50;
+const tileHeight = 50;
 let map_1 = generateRandomMap(50, 50);
 
 const img_grass = new Image();
 img_grass.src = 'grass.webp';
 const img_bet = new Image();
-img_bet.src = 'bet.jpg';
+img_bet.src = 'bet.jpeg';
 const liste_images = [img_bet, img_grass];
-
-// Assurez-vous que toutes les images sont chargées avant de dessiner la carte
-let imagesLoaded = 0;
-const totalImages = liste_images.length;
-
-liste_images.forEach((img) => {
-    img.onload = () => {
-        imagesLoaded++;
-        if (imagesLoaded === totalImages) {
-            // Toutes les images sont chargées, dessinez la carte
-            context.clearRect(0, 0, cnv.width, cnv.height);
-            drawMap(map_1, 0, 0); // Dessiner la carte initiale
-        }
-    };
-});
-
-class Tile {
-    constructor(x, y, type) {
-        this.x = x;
-        this.y = y;
-        this.width = tileWidth;
-        this.height = tileHeight;
-        this.img = liste_images[type]; // 0: road, 1: wall
-        this.type = type; // 0: road, 1: wall
-    }
-}
 
 function generateRandomMap(rows, cols) {
     const map = [];
@@ -65,34 +39,11 @@ function generateRandomMap(rows, cols) {
     return map;
 }
 
-map_1 = generateRandomMap(50, 50);
-
-function drawMap(map_1, modx, mody) {
-    for (let i = 0; i < map_1.length; i++) {
-        for (let j = 0; j < map_1[i].length; j++) {
-            const tile = new Tile(j * tileWidth + modx, i * tileHeight + mody, map_1[i][j]);
-            context.drawImage(tile.img, tile.x, tile.y, tile.width, tile.height);
-        }
-    }
-}
-
 img_voiture.onload = function() {
-    context.drawImage(img_voiture, x, y, 49, 77); // Dessiner la voiture initialement
 };
 
-function draw(x, y, map_1) {
-    // Effacer le canvas
-    context.clearRect(0, 0, cnv.width, cnv.height);
-
-    // Dessiner la carte
-    drawMap(map_1, x, y);
-
-    // Dessiner la voiture
-    context.save();
-    context.translate(cnv.width / 2, cnv.height / 2);
-    context.rotate(currentAngle);
-    context.drawImage(img_voiture, -49 / 2, -77 / 2, 49, 77);
-    context.restore();
+img_circuit.onload = function() {
+    context.drawImage(img_circuit, 0, 0, cnv.width, cnv.height);
 }
 
 function move() {
@@ -140,7 +91,20 @@ function move() {
     y += dy * 0.01;
 
     context.clearRect(0, 0, cnv.width, cnv.height);
-    draw(x, y, map_1); // Dessiner la carte avec les nouvelles coordonnées
+    context.drawImage(img_circuit, x, y, cnv.width, cnv.height);
+
+    // Save the context state
+    context.save();
+
+    // Translate to the center of the car and rotate
+    context.translate(cnv.width / 2, cnv.height / 2);
+    context.rotate(currentAngle);
+
+    // Draw the car image
+    context.drawImage(img_voiture, -49 / 2, -77 / 2, 49, 77);
+
+    // Restore the context state
+    context.restore();
 
     requestAnimationFrame(move);
 }

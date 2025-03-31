@@ -1,5 +1,8 @@
 #Game {
-    background-color: beige;
+    background-color: rgba(0, 0, 0, 0.8); /* Fond semi-transparent */
+    border: 5px solid #ff00ff; /* Bordure néon rose */
+    box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff; /* Ombre néon */
+    border-radius: 20px; /* Coins arrondis */
     display: block;
     margin: auto;
     width: 90%;
@@ -7,8 +10,11 @@
 }
 
 body {
-    background-color: rgb(28, 27, 27);
+    background-color: #000; /* Fond noir pour un effet néon */
+    color: #fff; /* Texte blanc pour le contraste */
     margin: 20px;
+    font-family: 'Roboto', sans-serif;
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; /* Effet néon sur le texte */
 }
 
 #align-esc-button {
@@ -19,44 +25,80 @@ body {
 }
 
 button {
-    width: 70px;
-    height: 50px;
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
     font-weight: bold;
     border-radius: 10px;
-    background-color:rgb(68, 68, 68);
-    color: rgb(157, 157, 157);
-    border-width: 5px;
+    background-color: #000; /* Fond noir */
+    color: #fff; /* Texte blanc */
+    border: 3px solid transparent; /* Bordure initiale transparente */
     cursor: pointer;
-    box-shadow: 2px 4px 16px #000000;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; /* Effet néon */
+    transition: transform 0.2s, box-shadow 0.2s; /* Animation au survol */
+}
+
+button:hover {
+    transform: scale(1.1); /* Agrandissement au survol */
+    box-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff; /* Intensification de l'effet néon */
+    background-color: #ff00ff; /* Couleur lumineuse néon rose */
 }
 
 #pausemenu {
     font-family: 'Roboto', sans-serif;
-    color: whitesmoke;
-    background-color:rgb(178, 183, 183);
-    border: 5px solid grey;
-    border-radius: 50px;
-    box-shadow: #000000 8px 16px 32px;
-    width: 50%;
-    height: 40%;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9); /* Fond noir semi-transparent */
+    border: 5px solid #00ffff; /* Bordure néon bleu */
+    border-radius: 20px;
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff; /* Ombre néon */
+    width: 60%;
+    height: 50%;
     display: none;
     position: absolute;
-    top: 5%;
-    left: 25%;
+    top: 25%;
+    left: 20%;
+    padding: 20px;
+    text-align: center;
 }
 
 #pausemenu h1 {
-    font-size: 40px;
-    text-align: center;
-    margin-top: 10%;
+    font-size: 50px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; /* Effet néon sur le titre */
 }
 
-#pausemenu_buttons {
+#pausemenu-buttons {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 40px;
 }
 
-#pausemenu button, a {
-    color: aqua;
+#pausemenu button {
+    font-size: 30px;
+    padding: 15px 30px;
+    border: 3px solid transparent;
+    border-radius: 15px;
+    background-color: #000;
+    color: #fff;
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; /* Effet néon sur le texte des boutons */
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#pausemenu button:hover {
+    transform: scale(1.1); /* Agrandissement au survol */
+    box-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff; /* Intensification de l'effet néon */
+    background-color: #ff00ff; /* Couleur lumineuse néon rose */
+}
+
+#pausemenu a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#pausemenu button:hover, #pausemenu a:hover {
+    background-color: #fb00bc; /* Couleur plus foncée au survol */
+    transform: scale(1.1); /* Agrandissement au survol */
 }
