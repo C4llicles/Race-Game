@@ -28,7 +28,7 @@ let started = false; // Variable pour vérifier si le jeu a commencé
 const tileWidth = 100;
 const tileHeight = 100;
 
-const defaultMap = [
+const defaultMap = [["Default"],[
     [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
@@ -44,10 +44,10 @@ const defaultMap = [
     [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
     [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
     [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-];
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+]];
 
-const newMap = [
+const newMap = [["New"],[
     [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -58,7 +58,26 @@ const newMap = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-];
+]];
+
+const Map2 = [["2"],[
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+    [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+    [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 0, 0, 3, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 0, 0, 3, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+]]
 
 let map_1 = defaultMap; // Use the new map
 
@@ -99,9 +118,9 @@ class Tile {
 }
 
 function drawMap(map_1, modx, mody) {
-    for (let i = 0; i < map_1.length; i++) {
-        for (let j = 0; j < map_1[i].length; j++) {
-            const tile = new Tile(j * tileWidth + modx, i * tileHeight + mody, map_1[i][j]);
+    for (let i = 0; i < map_1[1].length; i++) {
+        for (let j = 0; j < map_1[1][i].length; j++) {
+            const tile = new Tile(j * tileWidth + modx, i * tileHeight + mody, map_1[1][i][j]);
             context.drawImage(tile.img, tile.x, tile.y, tile.width, tile.height);
         }
     }
@@ -136,7 +155,16 @@ function drawChrono() {
 function toggleChrono() {
     if (chronoActive && checkpoints) {
         chronoActive = false;
-        chronoElapsedTime = Date.now() - chronoStartTime;
+        chronoElapsedTime = (Date.now() - chronoStartTime) / 1000;
+        let commetuveuxjteconseilformdata = new FormData();
+        commetuveuxjteconseilformdata.append("name", map_1[0][0]); // Remplacez par le nom du joueur
+        console.log("Temps envoyé :", chronoElapsedTime);
+        commetuveuxjteconseilformdata.append("temps",chronoElapsedTime.toFixed(2));
+        fetch("send.php", {
+            method: "POST",
+            body: commetuveuxjteconseilformdata,
+        });
+        console.log("Chrono stopped at: " + chronoElapsedTime);
     } else if (!started) {
         started = true; // Le jeu a commencé
         chronoActive = true;
@@ -157,8 +185,8 @@ function toggleChronoWithCooldown() {
 function checkCollision(newX, newY) {
     const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
     const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
-    console.log("Tile coordinates: ", tileX, tileY); // Debugging line
-    if (map_1[tileY] && map_1[tileY][tileX] === 1) {
+    //console.log("Tile coordinates: ", tileX, tileY); // Debugging line
+    if (map_1[1][tileY] && map_1[1][tileY][tileX] === 1) {
         console.log("Collision detected: The car is on a grass tile!");
         currentSpeed *= 0.8; // Réduire la vitesse légèrement
         return true; // Collision detected
@@ -169,7 +197,7 @@ function checkCollision(newX, newY) {
 function checkLineCollision(newX, newY) {
     const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
     const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
-    if (map_1[tileY] && map_1[tileY][tileX] === 2) { // Ligne spéciale
+    if (map_1[1][tileY] && map_1[1][tileY][tileX] === 2) { // Ligne spéciale
         toggleChronoWithCooldown();
         return true;
     }
@@ -179,8 +207,8 @@ function checkLineCollision(newX, newY) {
 function checkCheckpointCollision(newX, newY) {
     const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
     const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
-    if (map_1[tileY] && map_1[tileY][tileX] === 3) { // Checkpoint
-        console.log("Checkpoint reached!");
+    if (map_1[1][tileY] && map_1[1][tileY][tileX] === 3) { // Checkpoint
+        //console.log("Checkpoint reached!");
         return true;
     }
     return false;
@@ -232,16 +260,16 @@ function move() {
 
     // Analyze the tile the car is on
     if (checkCollision(x, y)) {
-        console.log("The car is on a grass tile!");
+        //console.log("The car is on a grass tile!");
     }
 
     if (checkLineCollision(x, y)) {
-        console.log("Touched the line!");
+        //console.log("Touched the line!");
     }
 
     if (checkCheckpointCollision(x, y)) {
         checkpoints = true; // Set the checkpoint flag to true
-        console.log("Checkpoint reached! Total checkpoints: " + checkpoints);
+        //console.log("Checkpoint reached! Total checkpoints: " + checkpoints);
     }
 
     context.clearRect(0, 0, cnv.width, cnv.height);

@@ -8,6 +8,6 @@
 </head>
 <body>
     <h1>Home</h1>
-    <div id="align-play-button"><a href="game.html"><button>PLAY</button></a></div>
+    <div id="align-play-button"><a href="game.php"><button>PLAY</button></a></div>
 </body>
 </html>
