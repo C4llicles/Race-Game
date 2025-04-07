@@ -17,15 +17,60 @@ const deceleration = 0.01; // Décélération progressive
 const maxRotationSpeed = 0.05; // Limite maximale de rotation par frame (en radians)
 let PauseGame = false; // Variable pour contrôler la pause
 
+let chronoActive = false;
+let chronoStartTime = 0;
+let chronoElapsedTime = 0;
+
+let lineCooldown = false;
+let checkpoints = false;
+let started = false; // Variable pour vérifier si le jeu a commencé
+
 const tileWidth = 100;
 const tileHeight = 100;
-let map_1 = generateRandomMap(50, 50);
+
+const defaultMap = [
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+    [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+    [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1],
+    [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 3, 3, 1],
+    [1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+    [1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1],
+    [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1],
+    [1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1],
+    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+];
+
+const newMap = [
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 1, 1, 1, 1, 0, 0, 1],
+    [1, 0, 0, 1, 0, 0, 1, 3, 3, 1],
+    [1, 2, 2, 1, 0, 0, 1, 0, 0, 1],
+    [1, 0, 0, 1, 1, 1, 1, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+let map_1 = defaultMap; // Use the new map
 
 const img_grass = new Image();
 img_grass.src = 'grass.webp';
 const img_bet = new Image();
 img_bet.src = 'bet.jpg';
-const liste_images = [img_bet, img_grass];
+const img_line = new Image();
+img_line.src = 'line.jpg';
+const img_checkpoint = new Image();
+img_checkpoint.src = 'check.webp';
+const liste_images = [img_bet, img_grass, img_line, img_checkpoint]; // Liste des images
 
 // Assurez-vous que toutes les images sont chargées avant de dessiner la carte
 let imagesLoaded = 0;
@@ -51,61 +96,6 @@ class Tile {
         this.img = liste_images[type]; // 0: road, 1: wall
         this.type = type; // 0: road, 1: wall
     }
-}
-
-function generateRandomMap(rows, cols) {
-    const map = Array.from({ length: rows }, () => Array(cols).fill(1)); // Initialize all tiles as walls (1)
-
-    const startX = Math.floor(rows / 2);
-    const startY = Math.floor(cols / 2);
-    let currentX = startX;
-    let currentY = startY;
-
-    const directions = [
-        [0, 1],  // Right
-        [1, 0],  // Down
-        [0, -1], // Left
-        [-1, 0], // Up
-    ];
-
-    let directionIndex = 0; // Start moving to the right
-
-    // Generate the course
-    for (let i = 0; i < rows * cols; i++) {
-        // Create a 2-tile-wide corridor
-        for (let w = 0; w < 2; w++) {
-            const offsetX = w === 0 ? 0 : directions[directionIndex][0];
-            const offsetY = w === 0 ? 0 : directions[directionIndex][1];
-
-            const newX = currentX + offsetX;
-            const newY = currentY + offsetY;
-
-            if (newX >= 0 && newX < rows && newY >= 0 && newY < cols) {
-                map[newX][newY] = 0; // Mark as road (concrete)
-            }
-        }
-
-        // Move to the next position
-        const [dx, dy] = directions[directionIndex];
-        currentX += dx;
-        currentY += dy;
-
-        // Ensure the course stays within bounds
-        if (
-            currentX < 1 || currentX >= rows - 1 || 
-            currentY < 1 || currentY >= cols - 1
-        ) {
-            directionIndex = (directionIndex + 1) % 4; // Change direction
-            continue;
-        }
-
-        // Randomly change direction to create zigzags and turns
-        if (Math.random() < 0.2) {
-            directionIndex = (directionIndex + (Math.random() < 0.5 ? 1 : -1) + 4) % 4;
-        }
-    }
-
-    return map;
 }
 
 function drawMap(map_1, modx, mody) {
@@ -134,6 +124,66 @@ function draw(x, y, map_1) {
     context.rotate(currentAngle);
     context.drawImage(img_voiture, -49 / 2, -77 / 2, 49, 77);
     context.restore();
+}
+
+function drawChrono() {
+    context.font = "20px Arial";
+    context.fillStyle = "red"; // Changer la couleur en rouge
+    const time = chronoActive ? (Date.now() - chronoStartTime) / 1000 : chronoElapsedTime / 1000;
+    context.fillText(`Chrono: ${time.toFixed(2)}s`, cnv.width - 150, 30);
+}
+
+function toggleChrono() {
+    if (chronoActive && checkpoints) {
+        chronoActive = false;
+        chronoElapsedTime = Date.now() - chronoStartTime;
+    } else if (!started) {
+        started = true; // Le jeu a commencé
+        chronoActive = true;
+        chronoStartTime = Date.now();
+    }
+}
+
+function toggleChronoWithCooldown() {
+    if (lineCooldown) return;
+
+    toggleChrono();
+    lineCooldown = true;
+    setTimeout(() => {
+        lineCooldown = false;
+    }, 1000); // Délai de 1 seconde
+}
+
+function checkCollision(newX, newY) {
+    const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
+    const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
+    console.log("Tile coordinates: ", tileX, tileY); // Debugging line
+    if (map_1[tileY] && map_1[tileY][tileX] === 1) {
+        console.log("Collision detected: The car is on a grass tile!");
+        currentSpeed *= 0.8; // Réduire la vitesse légèrement
+        return true; // Collision detected
+    }
+    return false; // No collision
+}
+
+function checkLineCollision(newX, newY) {
+    const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
+    const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
+    if (map_1[tileY] && map_1[tileY][tileX] === 2) { // Ligne spéciale
+        toggleChronoWithCooldown();
+        return true;
+    }
+    return false;
+}
+
+function checkCheckpointCollision(newX, newY) {
+    const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
+    const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
+    if (map_1[tileY] && map_1[tileY][tileX] === 3) { // Checkpoint
+        console.log("Checkpoint reached!");
+        return true;
+    }
+    return false;
 }
 
 function move() {
@@ -180,8 +230,23 @@ function move() {
     x += dx * 0.01;
     y += dy * 0.01;
 
+    // Analyze the tile the car is on
+    if (checkCollision(x, y)) {
+        console.log("The car is on a grass tile!");
+    }
+
+    if (checkLineCollision(x, y)) {
+        console.log("Touched the line!");
+    }
+
+    if (checkCheckpointCollision(x, y)) {
+        checkpoints = true; // Set the checkpoint flag to true
+        console.log("Checkpoint reached! Total checkpoints: " + checkpoints);
+    }
+
     context.clearRect(0, 0, cnv.width, cnv.height);
     draw(x, y, map_1); // Dessiner la carte avec les nouvelles coordonnées
+    drawChrono(); // Dessiner le chrono
 
     requestAnimationFrame(move);
 }
@@ -217,6 +282,11 @@ addEventListener('keyup', function(event) {
     }
 }
 );
+
+function resume() {
+    PauseGame = false; // Reprendre le jeu
+    this.document.getElementById("pausemenu").style.display = "none"; // Masquer le menu de pause
+}
 
 addEventListener('keypress', function(event) {
     if (event.key === "p") {
