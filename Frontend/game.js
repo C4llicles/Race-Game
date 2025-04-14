@@ -79,7 +79,7 @@ const Map2 = [["2"],[
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]]
 
-let map_1 = defaultMap; // Use the new map
+let map_1 = defaultMap; // Utiliser la carte par défaut
 
 const img_grass = new Image();
 img_grass.src = 'grass.webp';
@@ -112,12 +112,13 @@ class Tile {
         this.y = y;
         this.width = tileWidth;
         this.height = tileHeight;
-        this.img = liste_images[type]; // 0: road, 1: wall
-        this.type = type; // 0: road, 1: wall
+        this.img = liste_images[type];
+        this.type = type;
     }
 }
 
 function drawMap(map_1, modx, mody) {
+    // Dessiner la carte en fonction des coordonnées et du type de tuile
     for (let i = 0; i < map_1[1].length; i++) {
         for (let j = 0; j < map_1[1][i].length; j++) {
             const tile = new Tile(j * tileWidth + modx, i * tileHeight + mody, map_1[1][i][j]);
@@ -127,7 +128,8 @@ function drawMap(map_1, modx, mody) {
 }
 
 img_voiture.onload = function() {
-    context.drawImage(img_voiture, x, y, 49, 77); // Dessiner la voiture initialement
+    // Dessiner la voiture initialement
+    context.drawImage(img_voiture, x, y, 49, 77);
 };
 
 function draw(x, y, map_1) {
@@ -146,13 +148,15 @@ function draw(x, y, map_1) {
 }
 
 function drawChrono() {
+    // Afficher le chrono
     context.font = "20px Arial";
-    context.fillStyle = "red"; // Changer la couleur en rouge
+    context.fillStyle = "red"; // Couleur rouge
     const time = chronoActive ? (Date.now() - chronoStartTime) / 1000 : chronoElapsedTime / 1000;
     context.fillText(`Chrono: ${time.toFixed(2)}s`, cnv.width - 150, 30);
 }
 
 function toggleChrono() {
+    // Activer ou désactiver le chrono
     if (chronoActive && checkpoints) {
         chronoActive = false;
         chronoElapsedTime = (Date.now() - chronoStartTime) / 1000;
@@ -164,7 +168,7 @@ function toggleChrono() {
             method: "POST",
             body: commetuveuxjteconseilformdata,
         });
-        console.log("Chrono stopped at: " + chronoElapsedTime);
+        console.log("Chrono arrêté à : " + chronoElapsedTime);
     } else if (!started) {
         started = true; // Le jeu a commencé
         chronoActive = true;
@@ -173,6 +177,7 @@ function toggleChrono() {
 }
 
 function toggleChronoWithCooldown() {
+    // Activer ou désactiver le chrono avec un délai
     if (lineCooldown) return;
 
     toggleChrono();
@@ -183,18 +188,19 @@ function toggleChronoWithCooldown() {
 }
 
 function checkCollision(newX, newY) {
+    // Vérifier la collision avec une tuile d'herbe
     const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
     const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
-    //console.log("Tile coordinates: ", tileX, tileY); // Debugging line
     if (map_1[1][tileY] && map_1[1][tileY][tileX] === 1) {
-        console.log("Collision detected: The car is on a grass tile!");
-        currentSpeed *= 0.8; // Réduire la vitesse légèrement
-        return true; // Collision detected
+        console.log("Collision détectée : La voiture est sur une tuile d'herbe !");
+        currentSpeed *= 0.8; // Réduire légèrement la vitesse
+        return true; // Collision détectée
     }
-    return false; // No collision
+    return false; // Pas de collision
 }
 
 function checkLineCollision(newX, newY) {
+    // Vérifier la collision avec une ligne spéciale
     const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
     const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
     if (map_1[1][tileY] && map_1[1][tileY][tileX] === 2) { // Ligne spéciale
@@ -205,16 +211,17 @@ function checkLineCollision(newX, newY) {
 }
 
 function checkCheckpointCollision(newX, newY) {
+    // Vérifier la collision avec un checkpoint
     const tileX = Math.abs(Math.floor(((newX / tileWidth) - 5)));
     const tileY = Math.abs(Math.floor((newY / tileHeight) - 2));
     if (map_1[1][tileY] && map_1[1][tileY][tileX] === 3) { // Checkpoint
-        //console.log("Checkpoint reached!");
         return true;
     }
     return false;
 }
 
 function move() {
+    // Gérer le mouvement de la voiture
     if (PauseGame) {
         requestAnimationFrame(move); // Continuer à vérifier si le jeu est en pause
         return; // Arrêter l'exécution de la logique du jeu
@@ -232,15 +239,15 @@ function move() {
     if (keys['z']) targetY += currentSpeed;
     if (keys['s']) targetY -= currentSpeed;
 
-    // Calculate the angle of rotation
+    // Calculer l'angle de rotation
     const dx = targetX - x;
     const dy = targetY - y;
     const targetAngle = Math.atan2(dy, dx) - Math.PI / 2;
 
-    // Smoothly adjust the current angle towards the target angle
+    // Ajuster progressivement l'angle actuel vers l'angle cible
     let angleDifference = targetAngle - currentAngle;
 
-    // Ensure the angle difference takes the shortest path
+    // S'assurer que la différence d'angle prend le chemin le plus court
     if (angleDifference > Math.PI) {
         angleDifference -= 2 * Math.PI;
     } else if (angleDifference < -Math.PI) {
@@ -252,24 +259,23 @@ function move() {
 
     currentAngle += angleDifference;
 
-    // Normalize the angle to stay within [0, 2 * Math.PI]
+    // Normaliser l'angle pour rester dans [0, 2 * Math.PI]
     currentAngle = (currentAngle + 2 * Math.PI) % (2 * Math.PI);
 
     x += dx * 0.01;
     y += dy * 0.01;
 
-    // Analyze the tile the car is on
+    // Analyser la tuile sur laquelle se trouve la voiture
     if (checkCollision(x, y)) {
-        //console.log("The car is on a grass tile!");
+        // Collision détectée
     }
 
     if (checkLineCollision(x, y)) {
-        //console.log("Touched the line!");
+        // Ligne touchée
     }
 
     if (checkCheckpointCollision(x, y)) {
-        checkpoints = true; // Set the checkpoint flag to true
-        //console.log("Checkpoint reached! Total checkpoints: " + checkpoints);
+        checkpoints = true; // Activer le drapeau de checkpoint
     }
 
     context.clearRect(0, 0, cnv.width, cnv.height);
@@ -280,6 +286,7 @@ function move() {
 }
 
 addEventListener('keydown', function(event) {
+    // Gérer les touches pressées
     if (event.key === 'z') {
         keys['z'] = true;
     }
@@ -292,10 +299,10 @@ addEventListener('keydown', function(event) {
     if (event.key === 'd') {
         keys['d'] = true;
     }
-}
-);
+});
 
 addEventListener('keyup', function(event) {
+    // Gérer les touches relâchées
     if (event.key === 'z') {
         keys['z'] = false;
     }
@@ -308,15 +315,16 @@ addEventListener('keyup', function(event) {
     if (event.key === 'd') {
         keys['d'] = false;
     }
-}
-);
+});
 
 function resume() {
-    PauseGame = false; // Reprendre le jeu
+    // Reprendre le jeu
+    PauseGame = false;
     this.document.getElementById("pausemenu").style.display = "none"; // Masquer le menu de pause
 }
 
 addEventListener('keypress', function(event) {
+    // Gérer la pause et la reprise avec la touche "p"
     if (event.key === "p") {
         PauseGame = !PauseGame; // Basculer entre pause et reprise
         this.document.getElementById("pausemenu").style.display = PauseGame ? "block" : "none"; // Afficher ou masquer le menu de pause
